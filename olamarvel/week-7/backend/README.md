@@ -19,6 +19,7 @@ The live version of the frontend application is deployed on Vercel and can be vi
 - [Technology Stack](#technology-stack)
 - [Database Schema Design](#database-schema-design)
 - [API Documentation](#api-documentation)
+- [Testing Strategy](#testing-strategy)
 - [Setup and Installation](#setup-and-installation)
 - [Usage](#usage)
 
@@ -79,12 +80,51 @@ This design allows for efficient querying of a user's health data and easily est
 
 The API is thoroughly documented using Postman. The collection includes detailed descriptions for each endpoint, including validation rules, controller logic, expected request bodies, and example success/error responses.
 
-The Postman collection is available in the backend repository as `postman_collection.json` but you can also access it using this [link - postman docs](https://documenter.getpostman.com/view/49353777/2sB3Wjz43p).
+The Postman collection is available in the backend repository as `postman_collection.json`. You can also access the live Postman documentation using this [link](https://documenter.getpostman.com/view/49353777/2sB3Wjz43p).
 
 To use it:
 1. Import `postman_collection.json` into your Postman client or use the link.
 2. Configure a Postman environment and set the `baseUrl` variable to your backend's URL (e.g., `http://localhost:5000`).
 3. Run the "Login User" request to automatically capture the JWT and set it as the `authToken` environment variable for use in protected routes.
+
+---
+
+## Testing Strategy
+
+This project employs a multi-layered testing strategy to ensure both high code coverage and, more importantly, high confidence in the application's reliability. The goal is to create a robust and maintainable test suite that can catch regressions before they reach production.
+
+### 1. The Testing Pyramid
+
+Our strategy is modeled after the testing pyramid, with a broad base of fast, isolated unit tests and progressively fewer, more integrated tests as we move up the pyramid.
+
+- **Unit Tests (`__tests__/units`):**
+  - **Purpose:** To test the smallest, most isolated pieces of logic.
+  - **Tools:** `Jest`.
+  - **Examples:** Testing utility functions like `hashPassword` and `signAccess`. Dependencies like `bcrypt` and `jsonwebtoken` are mocked to ensure these tests are fast and deterministic.
+
+- **Integration Tests (`__tests__/integrations`):**
+  - **Purpose:** To test how different parts of the application work together.
+  - **Tools:** `Jest`, `Supertest`, and a dedicated test database (`mongodb://127.0.0.1:27017/pulse_test`).
+  - **Examples:** Testing API endpoints to ensure that a request flows correctly through the router, controller, and model, and that the correct response is returned. The database is reset before each test to ensure isolation.
+
+- **End-to-End (E2E) Workflow Tests (`__tests__/e2e`):**
+  - **Purpose:** To simulate a real user workflow by chaining multiple API calls together.
+  - **Tools:** `Jest`, `Supertest`.
+  - **Example:** A single test case that registers a user, logs them in, creates an appointment, and then fetches that appointment, verifying each step.
+
+### 2. Coverage and Confidence
+
+The project is configured to generate coverage reports using `npm run test:coverage`. After running the tests, a `coverage/` directory is created at the project root. You can view the detailed coverage report by opening `coverage/lcov-report/index.html` in your browser. Our goal is to achieve a minimum of **80% test coverage**. However, the primary focus is on **confidence**. We prioritize writing meaningful tests that cover critical paths, business logic, and error conditions over simply chasing a high coverage number.
+
+### 3. Continuous Integration (CI)
+
+We use **GitHub Actions** to automate our testing process. The workflow defined in `.github/workflows/ci.yml` is triggered on every push and pull request to the `main` branch. The CI pipeline:
+1. Sets up a Node.js environment.
+2. Starts a MongoDB service for the integration tests.
+3. Installs all project dependencies.
+4. Runs the entire test suite (`npm test`).
+
+This ensures that no new code is merged without passing all tests, providing a crucial safety net for the project.
 
 ---
 
