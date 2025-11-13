@@ -478,6 +478,48 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Monitoring",
+			"description": "Endpoints for health checks and metrics.",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health-check",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health-check"
+							]
+						},
+						"description": "**Route:** `GET /health-check`\\n\\n**Description:** Provides the health status of the application."
+					},
+					"response": []
+				},
+				{
+					"name": "Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/metrics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"metrics"
+							]
+						},
+						"description": "**Route:** `GET /metrics`\\n\\n**Description:** Exposes Prometheus metrics."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
