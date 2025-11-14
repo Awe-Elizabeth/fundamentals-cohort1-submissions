@@ -1,75 +1,119 @@
-# React + TypeScript + Vite
+# DeployHub Frontend — PulseTrack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Table of contents
 
-Currently, two official plugins are available:
+* [Live demo](#live-demo)
+* [Observability and analytics](#observability-and-analytics)
+* [Project overview](#project-overview)
+* [Features implemented](#features-implemented)
+* [Technology stack](#technology-stack)
+* [Setup and installation](#setup-and-installation)
+* [Quick dev commands](#quick-dev-commands)
+* [Usage](#usage)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Live demo
 
-## React Compiler
+The live frontend is deployed on Vercel:
+[https://deployhub-nine.vercel.app/](https://deployhub-nine.vercel.app/)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+Note: the backend is hosted separately so the first API request can take a moment.
 
-Note: This will impact Vite dev & build performances.
+# Observability and analytics
 
-## Expanding the ESLint configuration
+The frontend performs lightweight readiness checks so you can actually measure things when users show up.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+What it does
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* Pings `/health-check` for readiness checks
+* Optionally can scrape `/metrics` if you enable it
+Add this to `.env.local` at the root of the frontend repo:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_BASE_URL=http://localhost:5000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This variable is used by the client to:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+* make auth and data requests
+* perform health checks
+* optionally poll or reference `/metrics`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Project overview
+
+PulseTrack frontend is the UX for a health monitoring app that manages activities, appointments, and doctors. It focuses on solid auth flows, protected routes, and a responsive, accessible UI.
+
+# Features implemented
+
+* Authentication UI
+
+  * Login and register pages
+  * Axios interceptor that refreshes access tokens automatically
+  * Persistent sessions
+* Protected routes for Activities, Doctors, and Appointments
+* Activities module: create, list, view details
+* Doctors module: list, add, view details
+* Appointments module: schedule, list, view details
+* Observability integration: readiness ping, optional metrics, client-side login events
+* Responsive UI built with Tailwind CSS
+* Swiper.js for carousels and interactive components
+* "Coming soon" placeholders for future features like Meals
+
+# Technology stack
+
+* Next.js (App Router)
+* TypeScript
+* Tailwind CSS
+* Axios (with interceptors)
+* Swiper.js
+* Env config via `.env.local` using VITE_API_BASE_URL
+
+# Setup and installation
+
+Prerequisites: Node.js v18 or later
+
+1. Clone the frontend repo
+
+```bash
+git clone
+cd pulsetrack-frontend
 ```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Create `.env.local`
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+4. Start dev server
+
+```bash
+npm run dev
+```
+
+The app will be available at:
+
+```
+http://localhost:3000
+```
+
+# Quick dev commands
+
+* `npm run dev` - start dev server
+* `npm run build` - production build
+* `npm run start` - start production server
+* `npm run lint` - lint the codebase
+* `npm run test` - run tests
+
+# Usage
+
+1. Start the frontend (`npm run dev`).
+2. Visit `http://localhost:3000`.
+3. Register or login.
+4. Explore Activities, Doctors, and Appointments.
+5. Watch network calls for `/health-check` pings and login analytics events if you want proof that it is working.
