@@ -39,7 +39,7 @@ export const createEmailNotification = async (req: Request, res: Response) => {
     try {
         const {email, message} = req.body
         if(!email || !message){
-            return res.status(400).json({success: false, message: "phoneNumber and message is required"})
+            return res.status(400).json({success: false, message: "email and message is required"})
         }
 
         const emailNotification = await NotificationJob.create({
@@ -69,13 +69,13 @@ export const createPushNotification = async (req: Request, res: Response) => {
     try {
         const {deviceId, message} = req.body
         if(!deviceId || !message){
-            return res.status(400).json({success: false, message: "phoneNumber and message is required"})
+            return res.status(400).json({success: false, message: "deviceId and message is required"})
         }
 
         const pushNotification = await NotificationJob.create({
             deviceId,
             message,
-            channel: notificationChannels.email,
+            channel: notificationChannels.push,
             status: notificationStatus.queued
         });
 
@@ -83,10 +83,10 @@ export const createPushNotification = async (req: Request, res: Response) => {
             notificationJobId : pushNotification._id,
             event: "job-created",
             status: notificationStatus.success,
-            channel: notificationChannels.email
+            channel: notificationChannels.push
         });
 
-        sendToQueue(notificationChannels.email, pushNotification )
+        sendToQueue(notificationChannels.push, pushNotification )
 
         return res.status(200).json({success: true, message: "sucess"})
     } catch (error) {
