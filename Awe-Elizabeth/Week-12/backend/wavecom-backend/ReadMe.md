@@ -1,5 +1,6 @@
 #### Architecture Diagram
 
+<img width="863" height="733" alt="NotificationDiagram" src="https://github.com/user-attachments/assets/310fa1ac-1d78-4ccc-9a9a-c9c48753c1c7" />
 
 
 
